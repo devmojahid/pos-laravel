@@ -3,19 +3,51 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\VariationAttribute;
+use Illuminate\Support\Facades\DB;
 
 class ProductService
 {
-    public function createProduct(array $data): Product
+    public function createProduct(array $data)
     {
-        return Product::create($data);
-    }
 
-    public function updateProduct(Product $product, array $data): Product
-    {
-        $product->update($data);
+        DB::transaction(function () use ($data) {
 
-        return $product;
+            try {
+                $image = $data['image'];
+                $imageName = time() . '.' . $image->extension();
+                $image->move(public_path('uploads'), $imageName);
+            } catch (\Exception $e) {
+                throw new \Exception('File upload failed: ' . $e->getMessage());
+            }
+
+            $product = Product::create([
+                'name' => $data['name'],
+                'sku' => 'SKU' . rand(1000, 9999),
+                'unit' => $data['unit'],
+                'unit_value' => $data['unit_value'],
+                'selling_price' => $data['selling_price'],
+                'purchase_price' => $data['purchase_price'],
+                'discount' => $data['discount'],
+                'tax' => $data['tax'],
+                'image' => 'uploads/' . $imageName,
+            ]);
+
+            foreach ($data['variations'] as $variationItem) {
+                $variation = $product->variations()->create([
+                    'purchase_price' => $variationItem['purchase_price'],
+                    'selling_price' => $variationItem['selling_price'],
+                ]);
+
+                foreach ($variationItem['attributes'] as $attribute) {
+                    VariationAttribute::create([
+                        'variation_id' => $variation->id,
+                        'name' => $attribute['name'],
+                        'value' => $attribute['value'],
+                    ]);
+                }
+            }
+        }, 5);
     }
 
     public function deleteProduct(Product $product): void

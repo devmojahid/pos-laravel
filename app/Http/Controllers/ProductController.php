@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -12,7 +14,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('scene::products.index');
+        $products = Product::paginate(10);
+        return view('scene::products.index', compact('products'));
     }
 
     /**
@@ -26,9 +29,11 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request, ProductService $productService)
     {
-        dd($request->all());
+        $productService->createProduct($request->validated());
+
+        return redirect()->route('products')->with('success', 'Product created successfully');
     }
 
     /**

@@ -14,12 +14,14 @@
                         @csrf
                         <div class="mb-3">
                             <label for="productName" class="form-label">Name</label>
-                            <input type="text" class="form-control" name="name" id="productName">
+                            <input type="text" class="form-control" name="name" id="productName" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="productImage" class="form-label">Image</label>
-                            <input class="form-control" name="image" type="file" id="productImage">
+                            <input class="form-control" name="image" type="file" id="productImage" required
+                                accept="image/*">
+
                         </div>
 
                         <div class="form-group mb-3">
@@ -27,13 +29,13 @@
                                 <div class="col-md-6">
                                     <label for="sellingPrice" class="form-label">Selling Price</label>
                                     <input type="number" class="form-control" id="sellingPrice" name="selling_price"
-                                        min="0">
+                                        min="0" required>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="purchasePrice" class="form-label">Purchase Price</label>
                                     <input type="number" class="form-control" id="purchasePrice" name="purchase_price"
-                                        min="0">
+                                        min="0" required>
                                 </div>
                             </div>
                         </div>
@@ -42,13 +44,14 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="discount" class="form-label">Discount (%)</label>
-                                    <input type="number" class="form-control" id="discount" name="discount"
-                                        min="0">
+                                    <input type="number" class="form-control" id="discount" name="discount" min="0"
+                                        max="100">
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="tax" class="form-label">Tax (%)</label>
-                                    <input type="number" class="form-control" id="tax" name="tax" min="0">
+                                    <input type="number" class="form-control" id="tax" name="tax" min="0"
+                                        max="100">
                                 </div>
                             </div>
                         </div>
@@ -95,7 +98,7 @@
                                 <div class="attributes-container">
                                     <div class="d-flex justify-content-between">
                                         <h5>Attributes</h5>
-                                        <button type="button" onclick="addAttribute(0)">Add Attribute</button>
+                                        <button type="button" onclick="addAttribute(1)">Add Attribute</button>
                                     </div>
                                     <div class="attribute">
                                         <div class="form-group mb-3">
@@ -103,14 +106,14 @@
                                                 <div class="col-md-6">
                                                     <label for="attributeName" class="form-label">Attribute Name</label>
                                                     <input type="text" class="form-control" id="attributeName"
-                                                        name="variations[0][attributes][0][name]" required>
+                                                        name="variations[0][attributes][0][name]">
 
                                                 </div>
 
                                                 <div class="col-md-6">
                                                     <label for="attributeValue" class="form-label">Attribute Value</label>
                                                     <input type="text" class="form-control" id="attributeValue"
-                                                        name="variations[0][attributes][0][value]" required>
+                                                        name="variations[0][attributes][0][value]">
                                                 </div>
                                             </div>
                                         </div>
@@ -142,13 +145,13 @@
             <div class="col-md-6">
                 <label for="sellingPrice" class="form-label">Selling Price</label>
                 <input type="number" class="form-control" id="sellingPrice"
-                    name="variations[${variationIndex}][selling_price]" min="0" required>
+                    name="variations[${variationIndex}][selling_price]" min="0">
             </div>
 
             <div class="col-md-6">
                 <label for="purchasePrice" class="form-label">Purchase Price</label>
                 <input type="number" class="form-control" id="purchasePrice"
-                    name="variations[${variationIndex}][purchase_price]" min="0" required>
+                    name="variations[${variationIndex}][purchase_price]" min="0">
             </div>
         </div>
     </div>
@@ -165,14 +168,14 @@
                     <div class="col-md-6">
                         <label for="attributeName" class="form-label">Attribute Name</label>
                         <input type="text" class="form-control" id="attributeName"
-                            name="variations[${variationIndex}][attributes][0][name]" required>
+                            name="variations[${variationIndex}][attributes][0][name]">
                     </div>
 
                     <div class="col-md-6">
                         <label for="attributeValue" class="form-label
                         ">Attribute Value</label>
                         <input type="text" class="form-control" id="attributeValue"
-                            name="variations[${variationIndex}][attributes][0][value]" required>
+                            name="variations[${variationIndex}][attributes][0][value]">
                     </div>
                 </div>
             </div>
@@ -194,13 +197,13 @@
             <div class="col-md-6">
                 <label for="attributeName" class="form-label">Attribute Name</label>
                 <input type="text" class="form-control" id="attributeName"
-                    name="variations[${variationIndex}][attributes][${attributeIndices[variationIndex]}][name]" required>
+                    name="variations[${variationIndex}][attributes][${attributeIndices[variationIndex]}][name]">
             </div>
 
             <div class="col-md-6">
                 <label for="attributeValue" class="form-label">Attribute Value</label>
                 <input type="text" class="form-control" id="attributeValue"
-                    name="variations[${variationIndex}][attributes][${attributeIndices[variationIndex]}][value]" required>
+                    name="variations[${variationIndex}][attributes][${attributeIndices[variationIndex]}][value]">
             </div>
         </div>
     </div>
