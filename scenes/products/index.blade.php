@@ -32,7 +32,8 @@
                                     <td>${{ $product->selling_price }}</td>
                                     <td>${{ $product->purchase_price }}</td>
                                     <td>
-                                        <form action="" method="POST">
+                                        <form action="{{ route('delete.product', ['product' => $product->id]) }}"
+                                            method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger">Delete</button>

@@ -10,7 +10,9 @@
                 </div>
                 <div class="card-body">
                     <form class="pos-search">
-                        <input type="search" name="q" placeholder="Search items...">
+                        <input type="search" name="q" placeholder="Search items..." value="{{ request()->get('q') }}"
+                            id="search">
+
                     </form>
                     <ul class="pos-products-list">
                         @forelse ($products as $product)
@@ -162,7 +164,7 @@
                         </div>
                     </td>
                     <td>
-                        <input type="number" value="${item.quantity}">
+                        <input type="number" value="${item.quantity}" class="product_ty">
                     </td>
                     <td>${item.price}</td>
                     <td>
@@ -196,13 +198,28 @@
 
         confirm.addEventListener('click', () => {
             fetch('/pos/order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(cartItems),
-            });
-            alert('Order placed successfully');
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content'),
+                    },
+                    body: JSON.stringify({
+                        order_items: cartItems,
+                        total: parseFloat(total.textContent.replace('$', '')),
+                        sub_total: parseFloat(subTotal.textContent.replace('$', '')),
+                        discount: parseFloat(discount.textContent.replace('$', '')),
+                        tax: parseFloat(tax.textContent.replace('$', '')),
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
             cartItems = [];
             renderCartItems();
         });
@@ -213,6 +230,39 @@
                 cartItems = cartItems.filter(item => item.name !== id);
                 renderCartItems();
             }
+        });
+
+        document.addEventListener('input', e => {
+            if (e.target.classList.contains('product_ty')) {
+                const id = e.target.closest('tr').querySelector('.product h5').textContent;
+                const quantity = e.target.value;
+                const product = cartItems.find(item => item.name === id);
+                product.quantity = quantity;
+                renderCartItems();
+            }
+        });
+
+        const search = document.getElementById('search');
+
+        search.addEventListener('input', () => {
+            fetch(`/pos/product?search=${search.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    products.forEach(product => {
+                        product.style.display = 'none';
+                    });
+
+                    data.forEach(product => {
+                        const productElement = document.querySelector(
+                            `.pos-product-item[data-id="${product.id}"]`);
+                        productElement.style.display = 'block';
+                    });
+                    if (data.length === 0) {
+                        const pos_products_list = document.querySelector('.pos-products-list');
+                        pos_products_list.innerHTML = '<h2>No Product Found</h2>';
+                    }
+
+                });
         });
     </script>
 @endpush

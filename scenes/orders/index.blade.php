@@ -13,19 +13,45 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
+                                <th scope="col">Order Number</th>
+                                <th scope="col">Order Item Count</th>
+                                <th scope="col">Order Subtotal</th>
+                                <th scope="col">Order Total</th>
+                                <th scope="col">Action</th>
+
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
+                            @forelse ($orders as $order)
+                                <tr>
+                                    <th scope="row">{{ $loop->index + 1 }}</th>
+                                    <td>{{ $order->order_number }}</td>
+                                    <td>{{ $order->item_count }}</td>
+                                    <td>{{ $order->sub_total }}</td>
+                                    <td>{{ $order->total }}</td>
+                                    <td>
+                                        {{-- {{ route('order.show', ['order' => $order->id]) }} --}}
+                                        <a href="" class="btn btn-primary">View</a>
+                                    </td>
+
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="text-center">
+                                        <h2>No Order Found</h2>
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
+                        @if ($orders->hasPages())
+                            <tfoot>
+                                <tr>
+                                    <td colspan="6">
+                                        {{ $orders->links('pagination::bootstrap-5') }}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        @endif
                     </table>
                 </div>
             </div>

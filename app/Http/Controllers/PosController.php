@@ -18,4 +18,14 @@ class PosController extends Controller
         $product = Product::find($id);
         return response()->json($product);
     }
+
+    public function getProducts(Request $request)
+    {
+        $searchParam = $request->search;
+        $products = Product::query()
+            ->where('name', 'LIKE', "%{$searchParam}%")
+            ->orWhere('sku', 'LIKE', "%{$searchParam}%")
+            ->get();
+        return response()->json($products);
+    }
 }
