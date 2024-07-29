@@ -5,7 +5,7 @@ use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('pos', [PosController::class, "index"])->name('pos');
+Route::get('/', [PosController::class, "index"])->name('pos');
 Route::get('pos/product/item/{id}', [PosController::class, "getProduct"])->name('pos.product.item');
 Route::get('pos/product', [PosController::class, "getProducts"])->name('pos.product');
 

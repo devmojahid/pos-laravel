@@ -17,7 +17,6 @@
                                 <th scope="col">Order Item Count</th>
                                 <th scope="col">Order Subtotal</th>
                                 <th scope="col">Order Total</th>
-                                <th scope="col">Action</th>
 
                             </tr>
                         </thead>
@@ -29,10 +28,6 @@
                                     <td>{{ $order->item_count }}</td>
                                     <td>{{ $order->sub_total }}</td>
                                     <td>{{ $order->total }}</td>
-                                    <td>
-                                        {{-- {{ route('order.show', ['order' => $order->id]) }} --}}
-                                        <a href="" class="btn btn-primary">View</a>
-                                    </td>
 
                                 </tr>
                             @empty

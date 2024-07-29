@@ -11,9 +11,7 @@ class ProductService
 {
     public function createProduct(array $data)
     {
-
         DB::transaction(function () use ($data) {
-
             try {
                 $image = $data['image'];
                 $imageName = time() . '.' . $image->extension();
@@ -34,42 +32,26 @@ class ProductService
                 'image' => 'uploads/' . $imageName,
             ]);
 
-            // foreach ($data['variations'] as $variationItem) {
-            //     $variation = $product->variations()->create([
-            //         'purchase_price' => $variationItem['purchase_price'],
-            //         'selling_price' => $variationItem['selling_price'],
-            //     ]);
-
-            //     foreach ($variationItem['attributes'] as $attribute) {
-            //         VariationAttribute::create([
-            //             'variation_id' => $variation->id,
-            //             'name' => $attribute['name'],
-            //             'value' => $attribute['value'],
-            //         ]);
-            //     }
-            // }
             if (is_array($data['variations'])) {
                 foreach ($data['variations'] as $variationItem) {
                     $variation = $product->variations()->create([
-                        'purchase_price' => $variationItem['purchase_price'],
-                        'selling_price' => $variationItem['selling_price'],
+                        'purchase_price' => $variationItem['purchase_price'] ?? null,
+                        'selling_price' => $variationItem['selling_price'] ?? null,
                     ]);
 
-                    if (is_array($variationItem['attributes'])) {
+                    if (isset($variationItem['attributes']) && is_array($variationItem['attributes'])) {
                         foreach ($variationItem['attributes'] as $attribute) {
                             VariationAttribute::create([
                                 'variation_id' => $variation->id,
-                                'name' => $attribute['name'],
-                                'value' => $attribute['value'],
+                                'name' => $attribute['name'] ?? '',
+                                'value' => $attribute['value'] ?? '',
                             ]);
                         }
                     } else {
-                        // Handle the case where attributes are not an array
                         Log::error('Attributes are not an array: ' . json_encode($variationItem['attributes']));
                     }
                 }
             } else {
-                // Handle the case where variations are not an array
                 Log::error('Variations are not an array: ' . json_encode($data['variations']));
             }
         }, 5);

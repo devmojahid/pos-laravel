@@ -77,20 +77,20 @@
                         <div class="bottom-cart">
                             <div class="item sub-total">
                                 <span>Sub Total</span>
-                                <span>$7.90</span>
+                                <span>$0.00</span>
                             </div>
                             <div class="item discount">
-                                <span>Discount</span>
-                                <span>$0.00</span>
+                                <span>Discount(%)</span>
+                                <span>0</span>
                             </div>
                             <div class="item tax">
-                                <span>Tax</span>
-                                <span>$0.00</span>
+                                <span>Tax (%)</span>
+                                <span>0</span>
                             </div>
 
                             <div class="item total">
                                 <span>Total</span>
-                                <span>$7.90</span>
+                                <span>$0.00</span>
                             </div>
                         </div>
                     </div>
@@ -166,7 +166,7 @@
                     <td>
                         <input type="number" value="${item.quantity}" class="product_ty">
                     </td>
-                    <td>${item.price}</td>
+                    <td>$${item.price}</td>
                     <td>
                         <button class="delete-item-button">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="30px"
@@ -181,19 +181,25 @@
                 cart.appendChild(tr);
             });
 
+
             calculateTotal();
         }
 
         function calculateTotal() {
             let subTotalValue = 0;
+            let discountValue = 0;
+            let taxValue = 0;
+
             cartItems.forEach(item => {
                 subTotalValue += parseFloat(item.price.replace('$', '')) * item.quantity;
+                discountValue += parseFloat(item.discount) * item.quantity;
+                taxValue += parseFloat(item.tax) * item.quantity;
             });
 
             subTotal.textContent = `$${subTotalValue.toFixed(2)}`;
-            discount.textContent = '$0.00';
-            tax.textContent = '$0.00';
-            total.textContent = `$${subTotalValue.toFixed(2)}`;
+            discount.textContent = `$${discountValue.toFixed(2)}`;
+            tax.textContent = `$${taxValue.toFixed(2)}`;
+            total.textContent = `$${(subTotalValue - discountValue + taxValue).toFixed(2)}`;
         }
 
         confirm.addEventListener('click', () => {
@@ -224,10 +230,10 @@
             renderCartItems();
         });
 
-        document.addEventListener('click', e => {
-            if (e.target.classList.contains('delete-item-button')) {
-                const id = e.target.closest('tr').querySelector('.product h5').textContent;
-                cartItems = cartItems.filter(item => item.name !== id);
+        cart.addEventListener('click', (e) => {
+            if (e.target.closest('.delete-item-button')) {
+                const index = e.target.closest('.delete-item-button').getAttribute('data-index');
+                cartItems.splice(index, 1);
                 renderCartItems();
             }
         });
@@ -244,24 +250,39 @@
 
         const search = document.getElementById('search');
 
+        // when user change the search input
         search.addEventListener('input', () => {
             fetch(`/pos/product?search=${search.value}`)
                 .then(response => response.json())
                 .then(data => {
-                    products.forEach(product => {
-                        product.style.display = 'none';
-                    });
+                    const pos_products_list = document.querySelector('.pos-products-list');
+                    pos_products_list.innerHTML = '';
 
                     data.forEach(product => {
-                        const productElement = document.querySelector(
-                            `.pos-product-item[data-id="${product.id}"]`);
-                        productElement.style.display = 'block';
+                        const productElement = document.createElement('li');
+                        productElement.innerHTML = `
+                            <button class="pos-product-item" data-id="${product.id}">
+                                <figure><img src="${product.image}" alt="${product.name}" width="50" height="80">
+                                    <h3>${product.name}</h3>
+                                </figure>
+                                <div class="pos-product-price">
+                                    <span>
+                                        ${product.discount > 0 ? `<del>$${product.selling_price}</del> $${product.selling_price - product.discount}` : `$${product.selling_price}`}
+                                    </span>
+                                    <svg width="24" height="24" viewBox="0 0 24 24">
+                                        <title>Add</title>
+                                        <path
+                                            d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6 13h-5v5h-2v-5h-5v-2h5v-5h2v5h5v2z" />
+                                    </svg>
+                                </div>
+                            </button>
+                        `;
+                        pos_products_list.appendChild(productElement);
                     });
+
                     if (data.length === 0) {
-                        const pos_products_list = document.querySelector('.pos-products-list');
                         pos_products_list.innerHTML = '<h2>No Product Found</h2>';
                     }
-
                 });
         });
     </script>

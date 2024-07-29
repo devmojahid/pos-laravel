@@ -74,8 +74,8 @@
 
                         <div id="variations-container">
                             <div class="d-flex justify-content-between">
-                                <h4>Variations</h4>
-                                <button type="button" onclick="addVariation()">Add Variation</button>
+                                <h4>Variations 1</h4>
+                                <button type="button" id="addVariation" class="btn btn-success">Add Variation</button>
                             </div>
                             <div class="variation">
                                 <div class="form-group mb-3">
@@ -97,8 +97,9 @@
 
                                 <div class="attributes-container">
                                     <div class="d-flex justify-content-between">
-                                        <h5>Attributes</h5>
-                                        <button type="button" onclick="addAttribute(1)">Add Attribute</button>
+                                        <h5>Attributes for variation 1</h5>
+                                        <button type="button" id="addAttribute" class="btn btn-info">Add
+                                            Attribute</button>
                                     </div>
                                     <div class="attribute">
                                         <div class="form-group mb-3">
@@ -132,84 +133,114 @@
 
 @push('scripts')
     <script>
-        let variationIndex = 1;
-        let attributeIndices = [1];
-
-        function addVariation() {
-            const container = document.getElementById('variations-container');
-            const newVariation = document.createElement('div');
-            newVariation.className = 'variation';
-            newVariation.innerHTML = `
-    <div class="form-group mb-3">
-        <div class="row">
-            <div class="col-md-6">
-                <label for="sellingPrice" class="form-label">Selling Price</label>
-                <input type="number" class="form-control" id="sellingPrice"
-                    name="variations[${variationIndex}][selling_price]" min="0">
-            </div>
-
-            <div class="col-md-6">
-                <label for="purchasePrice" class="form-label">Purchase Price</label>
-                <input type="number" class="form-control" id="purchasePrice"
-                    name="variations[${variationIndex}][purchase_price]" min="0">
-            </div>
-        </div>
-    </div>
-
-
-    <div class="attributes-container">
-        <div class="d-flex justify-content-between">
-            <h5>Attributes</h5>
-            <button type="button" onclick="addAttribute(${variationIndex})">Add Attribute</button>
-        </div>
+        let attributeCountPrimary = 1;
+        // Add Attribute
+        $('#addAttribute').on('click', function() {
+            $(this).parent().parent().append(`
         <div class="attribute">
             <div class="form-group mb-3">
                 <div class="row">
                     <div class="col-md-6">
                         <label for="attributeName" class="form-label">Attribute Name</label>
                         <input type="text" class="form-control" id="attributeName"
-                            name="variations[${variationIndex}][attributes][0][name]">
+                            name="variations[0][attributes][${attributeCountPrimary}][name]">
+
                     </div>
 
                     <div class="col-md-6">
-                        <label for="attributeValue" class="form-label
-                        ">Attribute Value</label>
+                        <label for="attributeValue" class="form-label">Attribute Value</label>
                         <input type="text" class="form-control" id="attributeValue"
-                            name="variations[${variationIndex}][attributes][0][value]">
+                            name="variations[0][attributes][${attributeCountPrimary}][value]">
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    `;
-            container.appendChild(newVariation);
-            attributeIndices[variationIndex] = 1;
-            variationIndex++;
-        }
+    `);
+            attributeCountPrimary++;
+        });
+    </script>
 
-        function addAttribute(variationIndex) {
-            const container = document.querySelector(`.variation:nth-child(${variationIndex + 1}) .attributes-container`);
-            const newAttribute = document.createElement('div');
-            newAttribute.className = 'attribute';
-            newAttribute.innerHTML = `
-    <div class="form-group mb-3">
-        <div class="row">
-            <div class="col-md-6">
-                <label for="attributeName" class="form-label">Attribute Name</label>
-                <input type="text" class="form-control" id="attributeName"
-                    name="variations[${variationIndex}][attributes][${attributeIndices[variationIndex]}][name]">
-            </div>
+    <script>
+        $(document).ready(function() {
+            let variationCount = 0;
 
-            <div class="col-md-6">
-                <label for="attributeValue" class="form-label">Attribute Value</label>
-                <input type="text" class="form-control" id="attributeValue"
-                    name="variations[${variationIndex}][attributes][${attributeIndices[variationIndex]}][value]">
-            </div>
-        </div>
-    </div>
-    `;
-            container.appendChild(newAttribute);
-            attributeIndices[variationIndex]++;
-        }
+            $('#addVariation').click(function() {
+                variationCount++;
+                let attributeCount = 0;
+                $('#variations-container').append(`
+                        <div class="d-flex justify-content-between">
+                                <h4>Variations ${variationCount + 1}</h4>
+                        </div>
+                    <div class="variation">
+                        <div class="form-group mb-3">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="sellingPrice" class="form-label">Selling Price</label>
+                                    <input type="number" class="form-control" id="sellingPrice"
+                                        name="variations[${variationCount}][selling_price]" min="0">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="purchasePrice" class="form-label">Purchase Price</label>
+                                    <input type="number" class="form-control" id="purchasePrice"
+                                        name="variations[${variationCount}][purchase_price]" min="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="attributes" id="attributes-container">
+                            <div class="d-flex justify-content-between">
+                                <h5>Attributes for variation ${variationCount + 1}</h5>
+                                <button type="button" id="addAttribute${variationCount}" class="btn btn-info">Add Attribute</button>
+                            </div>
+                            <div class="attribute">
+                                <div class="form-group mb-3">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="attributeName" class="form-label">Attribute Name</label>
+                                            <input type="text" class="form-control" id="attributeName"
+                                                name="variations[${variationCount}][attributes][0][name]">
+
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="attributeValue" class="form-label">Attribute Value</label>
+                                            <input type="text" class="form-control" id="attributeValue"
+                                                name="variations[${variationCount}][attributes][0][value]">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                `);
+
+                $(`#addAttribute${variationCount}`).click(function() {
+                    attributeCount++;
+                    $(this).parent().parent().append(`
+                        <div class="attribute">
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="attributeName" class="form-label">Attribute Name</label>
+                                        <input type="text" class="form-control" id="attributeName"
+                                            name="variations[${variationCount}][attributes][${attributeCount}][name]">
+
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="attributeValue" class="form-label">Attribute Value</label>
+                                        <input type="text" class="form-control" id="attributeValue"
+                                            name="variations[${variationCount}][attributes][${attributeCount}][value]">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                });
+
+            });
+        });
     </script>
 @endpush
