@@ -26,11 +26,10 @@
                                         <span>
                                             @if ($product->discount > 0)
                                                 <del>${{ $product->selling_price }}</del>
-                                                ${{ $product->selling_price - $product->discount }}
+                                                ${{ $product->selling_price - ($product->selling_price * $product->discount) / 100 }}
                                             @else
                                                 ${{ $product->selling_price }}
                                             @endif
-
                                         </span>
                                         <svg width="24" height="24" viewBox="0 0 24 24">
                                             <title>Add</title>
@@ -191,9 +190,14 @@
             let taxValue = 0;
 
             cartItems.forEach(item => {
-                subTotalValue += parseFloat(item.price.replace('$', '')) * item.quantity;
-                discountValue += parseFloat(item.discount) * item.quantity;
-                taxValue += parseFloat(item.tax) * item.quantity;
+                const itemPrice = parseFloat(item.price.replace('$', ''));
+                const itemSubTotal = itemPrice * item.quantity;
+                const itemDiscount = itemSubTotal * (parseFloat(item.discount) / 100);
+                const itemTax = (itemSubTotal - itemDiscount) * (parseFloat(item.tax) / 100);
+
+                subTotalValue += itemSubTotal;
+                discountValue += itemDiscount;
+                taxValue += itemTax;
             });
 
             subTotal.textContent = `$${subTotalValue.toFixed(2)}`;
@@ -220,7 +224,7 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
+                    alert(data.message);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -267,7 +271,7 @@
                                 </figure>
                                 <div class="pos-product-price">
                                     <span>
-                                        ${product.discount > 0 ? `<del>$${product.selling_price}</del> $${product.selling_price - product.discount}` : `$${product.selling_price}`}
+                                        ${product.discount > 0 ? `<del>$${product.selling_price}</del> $${product.selling_price - (product.selling_price * product.discount) / 100}` : `$${product.selling_price}`}
                                     </span>
                                     <svg width="24" height="24" viewBox="0 0 24 24">
                                         <title>Add</title>
