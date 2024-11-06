@@ -1,7 +1,8 @@
-<<<<<<< HEAD
+
 ![Output 1 Like](output-1.png)
 ![Output 2 Like](output-2.png)
 ![Output 3 Like](output-3.png)
+### This Project for job test. 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 =======
 # Pos Laravel
