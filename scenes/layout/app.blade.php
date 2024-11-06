@@ -49,7 +49,6 @@
     </nav>
     <div class="main-pos-container">
         <div class="container pt-4">
-            {{-- show validation error --}}
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -59,15 +58,12 @@
                     </ul>
                 </div>
             @endif
-
-            {{-- show success massage --}}
             @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
             @endif
 
-            {{-- show error massage --}}
             @if (session('error'))
                 <div class="alert alert-danger">
                     {{ session('error') }}
